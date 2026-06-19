@@ -1,0 +1,72 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Site Details{% endblock %}
+
+{% block topbar_actions %}
+  <a class="secondary-button" href="{% url 'sites' %}">Back to sites</a>
+{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>{{ site.site_name }}</h3>
+        <p>{{ site.site_code }} · {{ site.get_site_type_display }} · {{ site.get_status_display }}</p>
+      </div>
+    </div>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <h3>Site Information</h3>
+        <dl class="detail-grid">
+          <dt>Site ID</dt><dd>{{ site.site_code }}</dd>
+          <dt>Client</dt>
+          <dd>
+            {% if site.client %}
+              <a class="record-link" href="{% url 'client_detail' site.client.pk %}">{{ site.client.client_name }} ({{ site.client.client_code }})</a>
+            {% else %}
+              Not linked
+            {% endif %}
+          </dd>
+          <dt>Customer</dt><dd>{{ site.customer_name }}</dd>
+          <dt>Site type</dt><dd>{{ site.get_site_type_display }}</dd>
+          <dt>Property type</dt><dd>{{ site.property_type|default:'Not added' }}</dd>
+          <dt>Status</dt><dd>{{ site.get_status_display }}</dd>
+          <dt>Assigned manager</dt><dd>{% firstof site.assigned_manager.display_name 'Not assigned' %}</dd>
+        </dl>
+      </section>
+
+      <section class="panel">
+        <h3>Contact</h3>
+        <dl class="detail-grid">
+          <dt>Contact person</dt><dd>{{ site.contact_person|default:'Not added' }}</dd>
+          <dt>Phone</dt><dd>{{ site.contact_phone|default:'Not added' }}</dd>
+          <dt>Email</dt><dd>{{ site.contact_email|default:'Not added' }}</dd>
+          <dt>Preferred time</dt><dd>{{ site.preferred_visit_time|default:'Not added' }}</dd>
+        </dl>
+      </section>
+    </div>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <h3>Location</h3>
+        <dl class="detail-grid">
+          <dt>Address</dt><dd>{{ site.address }}</dd>
+          <dt>City</dt><dd>{{ site.city }}</dd>
+          <dt>State</dt><dd>{{ site.state }}</dd>
+          <dt>Postal code</dt><dd>{{ site.postal_code|default:'Not added' }}</dd>
+          <dt>Service zone</dt><dd>{{ site.service_zone|default:'Not added' }}</dd>
+          <dt>Landmark</dt><dd>{{ site.landmark|default:'Not added' }}</dd>
+        </dl>
+      </section>
+
+      <section class="panel">
+        <h3>Access And Equipment</h3>
+        <dl class="detail-grid">
+          <dt>Access notes</dt><dd>{{ site.access_instructions|default:'Not added' }}</dd>
+          <dt>Equipment</dt><dd>{{ site.equipment_summary|default:'Not added' }}</dd>
+        </dl>
+      </section>
+    </div>
+  </section>
+{% endblock %}

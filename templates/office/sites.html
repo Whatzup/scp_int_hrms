@@ -1,0 +1,79 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Sites{% endblock %}
+
+{% block topbar_actions %}
+  <a class="primary-link-button" href="{% url 'add_site' %}">Add Site</a>
+{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>Site Database</h3>
+        <p>Search sites and click a site name to view full site details.</p>
+      </div>
+    </div>
+
+    <form class="search-card" method="get">
+      <label for="site-search">Search sites</label>
+      <div class="search-row">
+        <input
+          id="site-search"
+          name="q"
+          type="search"
+          value="{{ search_query }}"
+          placeholder="Search by site ID, site name, customer, contact, city, or zone"
+        >
+        <button type="submit">Search</button>
+        {% if search_query %}
+          <a class="secondary-button" href="{% url 'sites' %}">Clear</a>
+        {% endif %}
+      </div>
+    </form>
+
+    <div class="employee-table-card">
+      <table class="employee-table">
+        <thead>
+          <tr>
+            <th>Site ID</th>
+            <th>Client</th>
+            <th>Site name</th>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>City / Zone</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for site in sites %}
+            <tr>
+              <td>{{ site.site_code|default:'No ID' }}</td>
+              <td>
+                {% if site.client %}
+                  <a class="record-link" href="{% url 'client_detail' site.client.pk %}">{{ site.client.client_name }}</a>
+                  <br>{{ site.client.client_code }}
+                {% else %}
+                  No client
+                {% endif %}
+              </td>
+              <td>
+                <a class="record-link employee-name-link" href="{% url 'site_detail' site.pk %}">
+                  {{ site.site_name }}
+                </a>
+              </td>
+              <td>{{ site.customer_name }}</td>
+              <td>{{ site.contact_person|default:'No contact' }}<br>{{ site.contact_phone|default:'No phone' }}</td>
+              <td>{{ site.city }}{% if site.service_zone %} · {{ site.service_zone }}{% endif %}</td>
+              <td>{{ site.get_status_display }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7">No sites found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

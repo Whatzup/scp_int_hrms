@@ -1,0 +1,115 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Add Employee{% endblock %}
+
+{% block topbar_actions %}
+  <a class="secondary-button" href="{% url 'employees' %}">Back to employees</a>
+{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>New HVAC Employee</h3>
+        <p>Employee code is generated automatically, starting from SPC001.</p>
+      </div>
+    </div>
+
+    <form class="form-card" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <h3>Identity</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.employee_code_preview %}
+        {% include 'office/field.html' with field=form.aadhar_number %}
+        {% include 'office/field.html' with field=form.first_name %}
+        {% include 'office/field.html' with field=form.last_name %}
+        {% include 'office/field.html' with field=form.date_of_birth %}
+        {% include 'office/field.html' with field=form.gender %}
+        {% include 'office/field.html' with field=form.email %}
+        {% include 'office/field.html' with field=form.phone %}
+      </div>
+
+      <h3>Address</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.address wide=True %}
+        {% include 'office/field.html' with field=form.city %}
+        {% include 'office/field.html' with field=form.state %}
+        {% include 'office/field.html' with field=form.postal_code %}
+      </div>
+
+      <h3>Employment And Reporting</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.hire_date %}
+        {% include 'office/field.html' with field=form.employment_status %}
+        {% include 'office/field.html' with field=form.department_name %}
+        {% include 'office/field.html' with field=form.manager %}
+        {% include 'office/field.html' with field=form.job_title %}
+        {% include 'office/field.html' with field=form.availability %}
+        {% include 'office/field.html' with field=form.status %}
+        {% include 'office/field.html' with field=form.daily_wage %}
+        {% include 'office/field.html' with field=form.daily_incentive_earned %}
+        {% include 'office/field.html' with field=form.profile_photo %}
+      </div>
+
+      <h3>HVAC Skills And Certificates</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.service_area %}
+      </div>
+      {{ skill_formset.management_form }}
+      <div id="skill-form-list" class="skill-form-list">
+        {% for skill_form in skill_formset.forms %}
+          <div class="skill-form-card">
+            {% for hidden in skill_form.hidden_fields %}{{ hidden }}{% endfor %}
+            <div class="form-grid">
+              {% include 'office/field.html' with field=skill_form.skill_name %}
+              {% include 'office/field.html' with field=skill_form.skill_level %}
+              {% include 'office/field.html' with field=skill_form.certificate_number %}
+              {% include 'office/field.html' with field=skill_form.issuing_authority %}
+              {% include 'office/field.html' with field=skill_form.issue_date %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <button class="secondary-button" id="add-skill-button" type="button">Add skill</button>
+
+      <template id="empty-skill-form">
+        <div class="skill-form-card">
+          {% for hidden in skill_formset.empty_form.hidden_fields %}{{ hidden }}{% endfor %}
+          <div class="form-grid">
+            {% include 'office/field.html' with field=skill_formset.empty_form.skill_name %}
+            {% include 'office/field.html' with field=skill_formset.empty_form.skill_level %}
+            {% include 'office/field.html' with field=skill_formset.empty_form.certificate_number %}
+            {% include 'office/field.html' with field=skill_formset.empty_form.issuing_authority %}
+            {% include 'office/field.html' with field=skill_formset.empty_form.issue_date %}
+          </div>
+        </div>
+      </template>
+
+      <h3>Assigned Vehicle</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.plate_number %}
+        {% include 'office/field.html' with field=form.make %}
+        {% include 'office/field.html' with field=form.model %}
+        {% include 'office/field.html' with field=form.year %}
+      </div>
+
+      {% if form.errors %}<p class="form-error">{{ form.errors }}</p>{% endif %}
+      <button type="submit">Save employee</button>
+    </form>
+  </section>
+
+  <script>
+    const addSkillButton = document.getElementById('add-skill-button')
+    const skillFormList = document.getElementById('skill-form-list')
+    const emptySkillForm = document.getElementById('empty-skill-form')
+    const totalFormsInput = document.getElementById('id_skill_records-TOTAL_FORMS')
+
+    addSkillButton?.addEventListener('click', () => {
+      const formIndex = Number(totalFormsInput.value)
+      const html = emptySkillForm.innerHTML.replaceAll('__prefix__', formIndex)
+      skillFormList.insertAdjacentHTML('beforeend', html)
+      totalFormsInput.value = String(formIndex + 1)
+    })
+  </script>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Clients{% endblock %}
+
+{% block topbar_actions %}
+  <a class="primary-link-button" href="{% url 'add_client' %}">Add Client</a>
+{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>Client Database</h3>
+        <p>Search clients and click a client name to view full project and commercial details.</p>
+      </div>
+    </div>
+
+    <form class="search-card" method="get">
+      <label for="client-search">Search clients</label>
+      <div class="search-row">
+        <input
+          id="client-search"
+          name="q"
+          type="search"
+          value="{{ search_query }}"
+          placeholder="Search by client ID, name, company, mobile, email, project, or location"
+        >
+        <button type="submit">Search</button>
+        {% if search_query %}
+          <a class="secondary-button" href="{% url 'clients' %}">Clear</a>
+        {% endif %}
+      </div>
+    </form>
+
+    <div class="employee-table-card">
+      <table class="employee-table">
+        <thead>
+          <tr>
+            <th>Client ID</th>
+            <th>Client</th>
+            <th>Company</th>
+            <th>Mobile</th>
+            <th>Project</th>
+            <th>Requirement</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for client in clients %}
+            <tr>
+              <td>{{ client.client_code|default:'No ID' }}</td>
+              <td>
+                <a class="record-link employee-name-link" href="{% url 'client_detail' client.pk %}">
+                  {{ client.client_name }}
+                </a>
+                <br>{{ client.email|default:'No email' }}
+              </td>
+              <td>{{ client.company_name|default:'No company' }}</td>
+              <td>{{ client.mobile }}</td>
+              <td>{{ client.project_name }}<br>{{ client.location }}</td>
+              <td>{{ client.get_requirement_display }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6">No clients found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: scp_internal_tool_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: scp_user
+      POSTGRES_PASSWORD: scp_password
+      POSTGRES_DB: scp_internal_tool
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scp_user -d scp_internal_tool"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

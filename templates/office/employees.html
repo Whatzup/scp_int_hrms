@@ -1,0 +1,82 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}HVAC Employees{% endblock %}
+
+{% block topbar_actions %}
+  <a class="primary-link-button" href="{% url 'add_employee' %}">Add Employee</a>
+{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>Employee Database</h3>
+        <p>Search employees and click a name to view full details and reporting hierarchy.</p>
+      </div>
+    </div>
+
+    <form class="search-card" method="get">
+      <label for="employee-search">Search employees</label>
+      <div class="search-row">
+        <input
+          id="employee-search"
+          name="q"
+          type="search"
+          value="{{ search_query }}"
+          placeholder="Search by name, code, job title, email, or phone"
+        >
+        <button type="submit">Search</button>
+        {% if search_query %}
+          <a class="secondary-button" href="{% url 'employees' %}">Clear</a>
+        {% endif %}
+      </div>
+    </form>
+
+    <div class="employee-table-card">
+      <table class="employee-table">
+        <thead>
+          <tr>
+            <th>Photo</th>
+            <th>Employee</th>
+            <th>Employee code</th>
+            <th>Job title</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for employee in employees %}
+            <tr>
+              <td>
+                <div class="employee-avatar" aria-label="Employee photo">
+                  {% if employee.profile_photo %}
+                    <img src="{{ employee.profile_photo.url }}" alt="{{ employee.display_name }}">
+                  {% elif employee.gender == 'FEMALE' %}
+                    <span class="avatar-icon female">F</span>
+                  {% elif employee.gender == 'MALE' %}
+                    <span class="avatar-icon male">M</span>
+                  {% else %}
+                    <span class="avatar-icon neutral">U</span>
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                <a class="record-link employee-name-link" href="{% url 'employee_detail' employee.pk %}">
+                  {{ employee.display_name }}
+                </a>
+              </td>
+              <td>{{ employee.employee_code|default:'No code' }}</td>
+              <td>{{ employee.get_job_title_display }}</td>
+              <td>{{ employee.email }}</td>
+              <td>{{ employee.phone|default:'No phone' }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6">No employees found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Add Client{% endblock %}
+
+{% block topbar_actions %}
+  <a class="secondary-button" href="{% url 'clients' %}">Back to clients</a>
+{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>New Client</h3>
+        <p>Client ID is generated automatically when the client is saved.</p>
+      </div>
+    </div>
+
+    <form class="form-card" method="post">
+      {% csrf_token %}
+
+      <h3>Client Details</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.client_code_preview %}
+        {% include 'office/field.html' with field=form.client_name %}
+        {% include 'office/field.html' with field=form.company_name %}
+        {% include 'office/field.html' with field=form.mobile %}
+        {% include 'office/field.html' with field=form.email %}
+        {% include 'office/field.html' with field=form.address wide=True %}
+      </div>
+
+      <h3>Project Details</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.project_name %}
+        {% include 'office/field.html' with field=form.location %}
+        {% include 'office/field.html' with field=form.building_type %}
+        {% include 'office/field.html' with field=form.approx_area %}
+      </div>
+
+      <h3>Requirement</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.requirement %}
+        {% include 'office/field.html' with field=form.preferred_hvac_system %}
+        {% include 'office/field.html' with field=form.current_challenges wide=True %}
+      </div>
+
+      <h3>Commercial</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.budget_range %}
+        {% include 'office/field.html' with field=form.expected_completion_date %}
+      </div>
+
+      {% if form.errors %}<p class="form-error">{{ form.errors }}</p>{% endif %}
+      <button type="submit">Save client</button>
+    </form>
+  </section>
+{% endblock %}

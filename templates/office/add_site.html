@@ -1,0 +1,61 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Add Site{% endblock %}
+
+{% block topbar_actions %}
+  <a class="secondary-button" href="{% url 'sites' %}">Back to sites</a>
+{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>New Site</h3>
+        <p>Site ID is generated automatically, starting from S001.</p>
+      </div>
+    </div>
+
+    <form class="form-card" method="post">
+      {% csrf_token %}
+
+      <h3>Site Identity</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.site_code_preview %}
+        {% include 'office/field.html' with field=form.client %}
+        {% include 'office/field.html' with field=form.site_name %}
+        {% include 'office/field.html' with field=form.customer_name %}
+        {% include 'office/field.html' with field=form.site_type %}
+        {% include 'office/field.html' with field=form.property_type %}
+        {% include 'office/field.html' with field=form.status %}
+      </div>
+
+      <h3>Contact</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.contact_person %}
+        {% include 'office/field.html' with field=form.contact_phone %}
+        {% include 'office/field.html' with field=form.contact_email %}
+        {% include 'office/field.html' with field=form.assigned_manager %}
+      </div>
+
+      <h3>Location</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.address wide=True %}
+        {% include 'office/field.html' with field=form.city %}
+        {% include 'office/field.html' with field=form.state %}
+        {% include 'office/field.html' with field=form.postal_code %}
+        {% include 'office/field.html' with field=form.service_zone %}
+        {% include 'office/field.html' with field=form.landmark %}
+      </div>
+
+      <h3>Visit And Equipment Notes</h3>
+      <div class="form-grid">
+        {% include 'office/field.html' with field=form.preferred_visit_time %}
+        {% include 'office/field.html' with field=form.access_instructions wide=True %}
+        {% include 'office/field.html' with field=form.equipment_summary wide=True %}
+      </div>
+
+      {% if form.errors %}<p class="form-error">{{ form.errors }}</p>{% endif %}
+      <button type="submit">Save site</button>
+    </form>
+  </section>
+{% endblock %}

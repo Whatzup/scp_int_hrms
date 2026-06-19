@@ -1,0 +1,56 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Job Tasks{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <form class="form-card" method="post">
+      {% csrf_token %}
+      <h3>Assign Job Task</h3>
+      <div class="form-grid">
+        {{ form.title }}
+        {{ form.project }}
+        {{ form.assignee }}
+        {{ form.priority }}
+        {{ form.status }}
+        {{ form.due_date }}
+        {{ form.description }}
+      </div>
+      {% if form.errors %}<p class="form-error">{{ form.errors }}</p>{% endif %}
+      <button type="submit">Assign job task</button>
+    </form>
+
+    <div class="records-grid">
+      {% for task in tasks %}
+        <article class="record-card">
+          <div>
+            <div class="record-heading">
+              <h3>{{ task.title }}</h3>
+              <span class="pill {{ task.priority|lower }}">{{ task.get_priority_display }}</span>
+            </div>
+            <p>{{ task.description }}</p>
+            <p>Service job: {{ task.project.name }}</p>
+            <p>Technician: {% firstof task.assignee.name 'Unassigned' %}</p>
+            <p>Due: {{ task.due_date|default:'No due date' }}</p>
+          </div>
+          <div class="record-actions">
+            <form method="post" action="{% url 'update_status' 'tasks' task.pk %}">
+              {% csrf_token %}
+              <select name="status" onchange="this.form.submit()">
+                {% for value, label in task.Status.choices %}
+                  <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </form>
+            <form method="post" action="{% url 'delete_record' 'tasks' task.pk %}">
+              {% csrf_token %}
+              <button class="danger-button" type="submit">Delete</button>
+            </form>
+          </div>
+        </article>
+      {% empty %}
+        <p class="empty-state">No job tasks yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

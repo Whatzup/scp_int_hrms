@@ -1,0 +1,61 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Client Details{% endblock %}
+
+{% block topbar_actions %}
+  <a class="secondary-button" href="{% url 'clients' %}">Back to clients</a>
+{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>{{ client.client_name }}</h3>
+        <p>{{ client.client_code }} · {{ client.company_name|default:'No company' }}</p>
+      </div>
+    </div>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <h3>Client Details</h3>
+        <dl class="detail-grid">
+          <dt>Client ID</dt><dd>{{ client.client_code }}</dd>
+          <dt>Client name</dt><dd>{{ client.client_name }}</dd>
+          <dt>Company</dt><dd>{{ client.company_name|default:'Not added' }}</dd>
+          <dt>Mobile</dt><dd>{{ client.mobile }}</dd>
+          <dt>Email</dt><dd>{{ client.email|default:'Not added' }}</dd>
+          <dt>Address</dt><dd>{{ client.address|default:'Not added' }}</dd>
+        </dl>
+      </section>
+
+      <section class="panel">
+        <h3>Project Details</h3>
+        <dl class="detail-grid">
+          <dt>Project name</dt><dd>{{ client.project_name }}</dd>
+          <dt>Location</dt><dd>{{ client.location }}</dd>
+          <dt>Building type</dt><dd>{{ client.get_building_type_display }}</dd>
+          <dt>Approx area</dt><dd>{{ client.approx_area|default:'Not added' }}</dd>
+        </dl>
+      </section>
+    </div>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <h3>Requirement</h3>
+        <dl class="detail-grid">
+          <dt>Requirement</dt><dd>{{ client.get_requirement_display }}</dd>
+          <dt>Preferred system</dt><dd>{{ client.get_preferred_hvac_system_display }}</dd>
+          <dt>Current challenges</dt><dd>{{ client.current_challenges|default:'Not added' }}</dd>
+        </dl>
+      </section>
+
+      <section class="panel">
+        <h3>Commercial</h3>
+        <dl class="detail-grid">
+          <dt>Budget range</dt><dd>{{ client.budget_range|default:'Not added' }}</dd>
+          <dt>Expected completion</dt><dd>{{ client.expected_completion_date|default:'Not added' }}</dd>
+        </dl>
+      </section>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Employee Hierarchy{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="section-actions">
+      <div>
+        <h3>{{ employee.display_name }}</h3>
+        <p>{{ employee.employee_code|default:'No employee code' }} · {{ employee.get_job_title_display }}</p>
+      </div>
+      <a class="secondary-button" href="{% url 'employees' %}">Back to employees</a>
+    </div>
+
+    <section class="panel">
+      <h3>Reporting Hierarchy</h3>
+      <div class="hierarchy-chain">
+        {% for person in reporting_chain %}
+          <div class="hierarchy-node {% if person.pk == employee.pk %}current{% endif %}">
+            <strong>{{ person.display_name }}</strong>
+            <span>{{ person.get_job_title_display }}</span>
+            <small>{{ person.department_name|default:person.department }}</small>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <h3>Employee Details</h3>
+        <dl class="detail-grid">
+          <dt>Aadhaar</dt><dd>{{ employee.aadhar_number|default:'Not added' }}</dd>
+          <dt>Email</dt><dd>{{ employee.email }}</dd>
+          <dt>Phone</dt><dd>{{ employee.phone|default:'Not added' }}</dd>
+          <dt>DOB</dt><dd>{{ employee.date_of_birth|default:'Not added' }}</dd>
+          <dt>Gender</dt><dd>{{ employee.get_gender_display|default:'Not added' }}</dd>
+          <dt>Hire date</dt><dd>{{ employee.hire_date|default:'Not added' }}</dd>
+          <dt>Department</dt><dd>{% firstof employee.department_name.name employee.department 'Not added' %}</dd>
+          <dt>Job title</dt><dd>{{ employee.get_job_title_display }}</dd>
+          <dt>Status</dt><dd>{{ employee.get_employment_status_display }}</dd>
+          <dt>Reporting to</dt><dd>{% firstof employee.manager.display_name 'No reporting manager' %}</dd>
+          <dt>Daily wage</dt><dd>{{ employee.daily_wage|default:'Not added' }}</dd>
+          <dt>Daily incentive</dt><dd>{{ employee.daily_incentive_earned|default:'Not added' }}</dd>
+        </dl>
+      </section>
+
+      <section class="panel">
+        <h3>Address And Vehicle</h3>
+        <dl class="detail-grid">
+          <dt>Address</dt><dd>{{ employee.address|default:'Not added' }}</dd>
+          <dt>City</dt><dd>{{ employee.city|default:'Not added' }}</dd>
+          <dt>State</dt><dd>{{ employee.state|default:'Not added' }}</dd>
+          <dt>Postal code</dt><dd>{{ employee.postal_code|default:'Not added' }}</dd>
+          <dt>Plate number</dt><dd>{{ employee.plate_number|default:'Not assigned' }}</dd>
+          <dt>Vehicle</dt><dd>{{ employee.make|default:'-' }} {{ employee.model|default:'' }} {{ employee.year|default:'' }}</dd>
+        </dl>
+      </section>
+    </div>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <h3>Skills And Certificates</h3>
+        <div class="card-list">
+          {% for skill in employee.skill_records.all %}
+            <article class="mini-card">
+              <div>
+                <strong>{{ skill.skill_name }}</strong>
+                <p>{{ skill.get_skill_level_display }}</p>
+                <p>Certificate: {{ skill.certificate_number|default:'Not added' }}</p>
+                <p>{{ skill.issuing_authority|default:'No issuing authority' }}{% if skill.issue_date %} · {{ skill.issue_date }}{% endif %}</p>
+              </div>
+            </article>
+          {% empty %}
+            <p class="empty-copy">No skills or certificates added.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3>Direct Reports</h3>
+        <div class="card-list">
+          {% for report in direct_reports %}
+            <article class="mini-card">
+              <div>
+                <strong><a class="record-link" href="{% url 'employee_detail' report.pk %}">{{ report.display_name }}</a></strong>
+                <p>{{ report.get_job_title_display }} · {% firstof report.department_name.name report.department %}</p>
+              </div>
+              <span class="pill">{{ report.get_availability_display }}</span>
+            </article>
+          {% empty %}
+            <p class="empty-copy">No direct reports.</p>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </section>
+{% endblock %}

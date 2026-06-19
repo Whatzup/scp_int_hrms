@@ -1,0 +1,4 @@
+Django==4.2.30
+dj-database-url==3.0.1
+psycopg[binary]==3.2.13
+python-dotenv==1.2.1

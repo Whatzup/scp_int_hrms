@@ -1,0 +1,63 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <div class="metric-grid">
+      <article class="metric-card">
+        <span>Active employees</span>
+        <strong>{{ metrics.active_employees }}</strong>
+      </article>
+      <article class="metric-card">
+        <span>Active service jobs</span>
+        <strong>{{ metrics.active_projects }}</strong>
+      </article>
+      <article class="metric-card">
+        <span>Pending job tasks</span>
+        <strong>{{ metrics.pending_tasks }}</strong>
+      </article>
+      <article class="metric-card danger">
+        <span>Overdue job tasks</span>
+        <strong>{{ metrics.overdue_tasks }}</strong>
+      </article>
+    </div>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <h3>Upcoming HVAC Work</h3>
+        <div class="card-list">
+          {% for task in recent_tasks %}
+            <article class="mini-card">
+              <div>
+                <strong>{{ task.title }}</strong>
+                <p>{{ task.project.name }}{% if task.assignee %} · {{ task.assignee.name }}{% endif %}</p>
+              </div>
+              <span class="pill {{ task.priority|lower }}">{{ task.get_priority_display }}</span>
+            </article>
+          {% empty %}
+            <p class="empty-copy">No job tasks yet.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3>Service Job Snapshot</h3>
+        <div class="card-list">
+          {% for project in projects %}
+            <article class="mini-card">
+              <div>
+                <strong>{{ project.name }}</strong>
+                <p>{{ project.customer_name|default:'No customer' }} · {{ project.equipment_type|default:'Equipment TBD' }}</p>
+                <p>{% firstof project.owner.name 'No supervisor' %} · {{ project.task_count }} job tasks</p>
+              </div>
+              <span class="pill">{{ project.get_status_display }}</span>
+            </article>
+          {% empty %}
+            <p class="empty-copy">No service jobs yet.</p>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </section>
+{% endblock %}

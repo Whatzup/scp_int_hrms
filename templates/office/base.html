@@ -1,0 +1,51 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SCP HVAC Hub</title>
+  <link rel="stylesheet" href="{% static 'office/styles.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div>
+        <p class="eyebrow">Super Cool Projects</p>
+        <h1>HVAC Hub</h1>
+        <p class="sidebar-copy">Manage HVAC technicians, service jobs, and field assignments.</p>
+      </div>
+      <nav class="nav-tabs" aria-label="Main sections">
+        <a class="{% if active_tab == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
+        <a class="{% if active_tab == 'employees' %}active{% endif %}" href="{% url 'employees' %}">Employees</a>
+        <a class="{% if active_tab == 'sites' %}active{% endif %}" href="{% url 'sites' %}">Sites</a>
+        <a class="{% if active_tab == 'clients' %}active{% endif %}" href="{% url 'clients' %}">Clients</a>
+        <a class="{% if active_tab == 'projects' %}active{% endif %}" href="{% url 'projects' %}">Service Jobs</a>
+        <a class="{% if active_tab == 'tasks' %}active{% endif %}" href="{% url 'tasks' %}">Job Tasks</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">HVAC operations</p>
+          <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+        </div>
+        <div class="topbar-actions">
+          {% block topbar_actions %}{% endblock %}
+        </div>
+      </header>
+
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <p class="message">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

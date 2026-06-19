@@ -1,0 +1,59 @@
+{% extends 'office/base.html' %}
+
+{% block page_title %}Service Jobs{% endblock %}
+
+{% block content %}
+  <section class="stack">
+    <form class="form-card" method="post">
+      {% csrf_token %}
+      <h3>Add Service Job</h3>
+      <div class="form-grid">
+        {{ form.name }}
+        {{ form.customer_name }}
+        {{ form.service_address }}
+        {{ form.equipment_type }}
+        {{ form.job_type }}
+        {{ form.owner }}
+        {{ form.status }}
+        {{ form.start_date }}
+        {{ form.end_date }}
+        {{ form.description }}
+      </div>
+      {% if form.errors %}<p class="form-error">{{ form.errors }}</p>{% endif %}
+      <button type="submit">Add service job</button>
+    </form>
+
+    <div class="records-grid">
+      {% for project in projects %}
+        <article class="record-card">
+          <div>
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.description }}</p>
+            <p>Customer: {{ project.customer_name|default:'No customer' }}</p>
+            <p>Site: {{ project.service_address|default:'No service address' }}</p>
+            <p>Equipment: {{ project.equipment_type|default:'Equipment TBD' }} · {{ project.get_job_type_display }}</p>
+            <p>Supervisor: {% firstof project.owner.name 'No supervisor' %}</p>
+            <p>{{ project.start_date|default:'No start date' }} - {{ project.end_date|default:'No end date' }}</p>
+            <p>{{ project.task_count }} job tasks</p>
+          </div>
+          <div class="record-actions">
+            <form method="post" action="{% url 'update_status' 'projects' project.pk %}">
+              {% csrf_token %}
+              <select name="status" onchange="this.form.submit()">
+                {% for value, label in project.Status.choices %}
+                  <option value="{{ value }}" {% if project.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </form>
+            <form method="post" action="{% url 'delete_record' 'projects' project.pk %}">
+              {% csrf_token %}
+              <button class="danger-button" type="submit">Delete</button>
+            </form>
+          </div>
+        </article>
+      {% empty %}
+        <p class="empty-state">No service jobs yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}
