@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { createServer as createViteServer } from "vite";
 import { db, pool } from "./src/db/index.ts";
 import { sql } from "drizzle-orm";
 import { departments, employees, employeeSkills, clients, clientContacts, sites, projects, tasks, hvacCatalog, vendors, clientTypeIndustryMapping } from "./src/db/schema.ts";
@@ -2929,6 +2928,7 @@ async function startServer() {
   dbConnected = await initDb();
 
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
