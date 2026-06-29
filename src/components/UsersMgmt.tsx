@@ -59,7 +59,12 @@ export default function UsersMgmt({ users, employees = [], onRefreshUsers, onSho
         })
       });
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch (e) {
+        data = { error: `Server returned an invalid response (status ${res.status})` };
+      }
       if (res.ok) {
         // If we want to set role to admin specifically
         if (newRole === 'admin' && data.user && data.user.id) {
@@ -109,7 +114,12 @@ export default function UsersMgmt({ users, employees = [], onRefreshUsers, onSho
         setEditingUserId(null);
         onRefreshUsers();
       } else {
-        const data = await res.json();
+        let data: any = {};
+        try {
+          data = await res.json();
+        } catch (e) {
+          data = { error: `Server returned an invalid response (status ${res.status})` };
+        }
         onShowToast(data.error || "Failed to update user", "error");
       }
     } catch (err: any) {

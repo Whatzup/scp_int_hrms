@@ -30,7 +30,12 @@ export default function LoginScreen({ onLoginSuccess, onShowToast }: LoginScreen
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: presetEmail, password: presetPass })
       });
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch (e) {
+        data = { error: `Server returned an invalid response (status ${res.status})` };
+      }
       if (res.ok && data.status === 'success') {
         localStorage.setItem('scp_current_user', JSON.stringify(data.user));
         onLoginSuccess(data.user);
@@ -65,7 +70,12 @@ export default function LoginScreen({ onLoginSuccess, onShowToast }: LoginScreen
         body: JSON.stringify(body)
       });
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch (e) {
+        data = { error: `Server returned an invalid response (status ${res.status})` };
+      }
       if (res.ok && data.status === 'success') {
         localStorage.setItem('scp_current_user', JSON.stringify(data.user));
         onLoginSuccess(data.user);

@@ -2947,7 +2947,21 @@ async function startServer() {
   });
 }
 
-startServer().catch(err => {
-  console.error("Fatal server startup error:", err);
-});
+// Export app for serverless deployment platforms like Vercel
+export default app;
+
+if (!process.env.VERCEL) {
+  startServer().catch(err => {
+    console.error("Fatal server startup error:", err);
+  });
+} else {
+  // On Vercel, we still want to trigger the async database connection and schema sync once at cold start
+  initDb().then(success => {
+    dbConnected = success;
+    console.log(`[Vercel Serverless] Database connected and synced: ${success}`);
+  }).catch(err => {
+    console.error("[Vercel Serverless] Failed to initialize DB:", err);
+  });
+}
+
 
